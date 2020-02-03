@@ -10,4 +10,6 @@
 * Domain Path: /languages/
 */
 
-require_once( dirname(__FILE__) . "/mpdf/mpdf.php");
+if( ! class_exists( 'mPDF' ) ) {
+    require_once( dirname(__FILE__) . "/mpdf/mpdf.php");
+}
