@@ -9,7 +9,7 @@
 * Text Domain: magepeople-pdf-support
 * Domain Path: /languages/
 */
-
+if ( ! defined( 'ABSPATH' ) ) { die; } // Cannot access pages directly.
 if( ! class_exists( 'mPDF' ) ) {
     require 'inc/plugin-updates/plugin-update-checker.php';
     $ExampleUpdateChecker = PucFactory::buildUpdateChecker(
