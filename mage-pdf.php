@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) { die; } // Cannot access pages directly.
 if( ! class_exists( 'mPDF' ) ) {
     require 'inc/plugin-updates/plugin-update-checker.php';
     $ExampleUpdateChecker = PucFactory::buildUpdateChecker(
-        'http://vaincode.com/update/mpdf/mpdf.json',
+        'https://vaincode.com/update/mpdf/mpdf.json',
         __FILE__
     );
     require_once( dirname(__FILE__) . "/lib/vendor/autoload.php");
