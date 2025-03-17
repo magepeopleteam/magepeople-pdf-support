@@ -1,10 +1,9 @@
 <?php
-
 /**
  * This file is part of FPDI
  *
  * @package   setasign\Fpdi
- * @copyright Copyright (c) 2024 Setasign GmbH & Co. KG (https://www.setasign.com)
+ * @copyright Copyright (c) 2020 Setasign GmbH & Co. KG (https://www.setasign.com)
  * @license   http://opensource.org/licenses/mit-license The MIT License
  */
 
@@ -16,6 +15,8 @@ use setasign\Fpdi\PdfParser\Tokenizer;
 
 /**
  * Class representing a PDF dictionary object
+ *
+ * @package setasign\Fpdi\PdfParser\Type
  */
 class PdfDictionary extends PdfType
 {
@@ -48,11 +49,12 @@ class PdfDictionary extends PdfType
             if (!($key instanceof PdfName)) {
                 $lastToken = null;
                 // ignore all other entries and search for the closing brackets
-                while (($token = $tokenizer->getNextToken()) !== '>' || $lastToken !== '>') {
-                    if ($token === false) {
-                        return false;
-                    }
+                while (($token = $tokenizer->getNextToken()) !== '>' && $token !== false && $lastToken !== '>') {
                     $lastToken = $token;
+                }
+
+                if ($token === false) {
+                    return false;
                 }
 
                 break;
@@ -77,7 +79,7 @@ class PdfDictionary extends PdfType
             $entries[$key->value] = $value;
         }
 
-        $v = new self();
+        $v = new self;
         $v->value = $entries;
 
         return $v;
@@ -91,7 +93,7 @@ class PdfDictionary extends PdfType
      */
     public static function create(array $entries = [])
     {
-        $v = new self();
+        $v = new self;
         $v->value = $entries;
 
         return $v;
@@ -102,11 +104,11 @@ class PdfDictionary extends PdfType
      *
      * @param mixed $dictionary
      * @param string $key
-     * @param PdfType|null $default
+     * @param PdfType|mixed|null $default
      * @return PdfNull|PdfType
      * @throws PdfTypeException
      */
-    public static function get($dictionary, $key, ?PdfType $default = null)
+    public static function get($dictionary, $key, PdfType $default = null)
     {
         $dictionary = self::ensure($dictionary);
 
@@ -114,7 +116,9 @@ class PdfDictionary extends PdfType
             return $dictionary->value[$key];
         }
 
-        return $default ?? new PdfNull();
+        return $default === null
+            ? new PdfNull()
+            : $default;
     }
 
     /**

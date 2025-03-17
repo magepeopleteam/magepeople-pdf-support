@@ -1,10 +1,9 @@
 <?php
-
 /**
  * This file is part of FPDI
  *
  * @package   setasign\Fpdi
- * @copyright Copyright (c) 2024 Setasign GmbH & Co. KG (https://www.setasign.com)
+ * @copyright Copyright (c) 2020 Setasign GmbH & Co. KG (https://www.setasign.com)
  * @license   http://opensource.org/licenses/mit-license The MIT License
  */
 
@@ -23,6 +22,8 @@ use setasign\Fpdi\PdfParser\Type\PdfTypeException;
 
 /**
  * A PDF reader class
+ *
+ * @package setasign\Fpdi\PdfReader
  */
 class PdfReader
 {
@@ -109,7 +110,7 @@ class PdfReader
     /**
      * Get a page instance.
      *
-     * @param int|numeric-string $pageNumber
+     * @param int $pageNumber
      * @return Page
      * @throws PdfTypeException
      * @throws CrossReferenceException
@@ -177,7 +178,6 @@ class PdfReader
                     // let's reset the pages array and read all page objects
                     $this->pages = [];
                     $this->readPages(true);
-                    // @phpstan-ignore-next-line
                     $page = $this->pages[$pageNumber - 1];
                 }
             } else {
@@ -202,8 +202,7 @@ class PdfReader
             return;
         }
 
-        $expectedPageCount = $this->getPageCount();
-        $readPages = function ($kids, $count) use (&$readPages, $readAll, $expectedPageCount) {
+        $readPages = function ($kids, $count) use (&$readPages, $readAll) {
             $kids = PdfArray::ensure($kids);
             $isLeaf = ($count->value === \count($kids->value));
 
@@ -219,17 +218,9 @@ class PdfReader
                 $type = PdfDictionary::get($object->value, 'Type');
 
                 if ($type->value === 'Pages') {
-                    $readPages(
-                        PdfType::resolve(PdfDictionary::get($object->value, 'Kids'), $this->parser),
-                        PdfType::resolve(PdfDictionary::get($object->value, 'Count'), $this->parser)
-                    );
+                    $readPages(PdfDictionary::get($object->value, 'Kids'), PdfDictionary::get($object->value, 'Count'));
                 } else {
                     $this->pages[] = $object;
-                }
-
-                // stop if all pages are read - faulty documents exists with additional entries with invalid data.
-                if (count($this->pages) === $expectedPageCount) {
-                    break;
                 }
             }
         };
