@@ -68,7 +68,8 @@ class Request implements \Psr\Http\Message\RequestInterface
 		}
 	}
 
-	public function getRequestTarget(): string
+	// public function getRequestTarget(): string
+	public function getRequestTarget()
 	{
 		if ($this->requestTarget !== null) {
 			return $this->requestTarget;
@@ -85,7 +86,8 @@ class Request implements \Psr\Http\Message\RequestInterface
 		return $target;
 	}
 
-	public function withRequestTarget(string $requestTarget): RequestInterface
+	// public function withRequestTarget(string $requestTarget): RequestInterface
+	public function withRequestTarget($requestTarget): RequestInterface
 	{
 		if (preg_match('#\s#', $requestTarget)) {
 			throw new \InvalidArgumentException('Invalid request target provided; cannot contain whitespace');
