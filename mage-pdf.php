@@ -16,5 +16,9 @@ if( ! class_exists( 'mPDF' ) ) {
         'https://mage-people.com/update/mpdf.json',
         __FILE__
     );
-    require_once( dirname(__FILE__) . "/lib/vendor/autoload.php");
+    // require_once( dirname(__FILE__) . "/lib/vendor/autoload.php");
+
+    if (file_exists(__DIR__ . '/lib/vendor/autoload.php')) {
+    require_once __DIR__ . '/lib/vendor/autoload.php';
+}
 }
