@@ -18,3 +18,7 @@ if( ! class_exists( 'mPDF' ) ) {
     );
     require_once( dirname(__FILE__) . "/lib/vendor/autoload.php");
 }
+
+function Mage_PDF_Support_init() {
+    return true;
+}
